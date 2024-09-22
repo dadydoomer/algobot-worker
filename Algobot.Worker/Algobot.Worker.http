@@ -1,0 +1,6 @@
+@Algobot.Worker_HostAddress = http://localhost:5159
+
+GET {{Algobot.Worker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
