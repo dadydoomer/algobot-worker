@@ -11,7 +11,7 @@ namespace Algo.Bot.Infrastructure.Adapters.HttpClients
     {
         Task<Candle> GetCandle(string symbol, Interval interval, DateTime start, DateTime end);
         Task<Candle> GetLastCandle(string symbol, Interval interval);
-        Task<IList<Candle>> GetCandles(string symbol, Interval interval, DateTime start, DateTime end);
+        Task<IList<Candle>> GetCandles(string symbol, Interval interval, int limit);
         Task<(int pricePrecision, int quantityPrecision)> GetSymbolPrecisions(string symbol);
     }
 
@@ -65,10 +65,10 @@ namespace Algo.Bot.Infrastructure.Adapters.HttpClients
             throw new ArgumentException($"Candle not found at binance exchange. Symbol {symbol}, Interval {interval}.");
         }
 
-        public async Task<IList<Candle>> GetCandles(string symbol, Interval interval, DateTime start, DateTime end)
+        public async Task<IList<Candle>> GetCandles(string symbol, Interval interval, int limit)
         {
             var binanceInterval = ToBinanceInterval.Convert(interval);
-            var binanceCandles = await _binanceClient.SpotApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval, start, end);
+            var binanceCandles = await _binanceClient.SpotApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval, limit: limit);
             if (binanceCandles.Data != null
             && binanceCandles.Data.Any())
             {

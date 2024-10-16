@@ -36,15 +36,15 @@ namespace Algobot.Worker.Infrastructure
                 result = await _marketCapHttpClient.Get24HSymbols();
             }
 
-            var message = new TrendingMessage 
+            var message = new TrendingMessage
             {
                 Interval = interval,
-                Symbols = result.OrderByDescending(x => x.Item2).Where(x => x.Item2 >= minimumPercentageChange).Select(x => x.Item1).ToList()
+                Symbols = result.OrderByDescending(x => x.Item2).Where(x => x.Item2 >= minimumPercentageChange).Select(x => x.Item1.Trim()).ToList()
             };
 
             await _bus.Publish(message);
 
-            return result.OrderByDescending(x => x.Item2).Where(x => x.Item2 >= minimumPercentageChange).Select(x => x.Item1).ToList();
+            return message.Symbols.ToList();
         }
     }
 }

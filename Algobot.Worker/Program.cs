@@ -1,3 +1,5 @@
+using Algo.Bot.Application.Adapters.Services;
+using Algo.Bot.Domain.Ports;
 using Algobot.Worker.Application.Consumers;
 using Algobot.Worker.Configuration;
 using Algobot.Worker.Infrastructure;
@@ -20,20 +22,9 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString(RedisOptions.SectionName);
-    options.InstanceName = RedisOptions.SectionName;
-    options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions()
-    {
-        AbortOnConnectFail = true,
-        EndPoints = { options.Configuration }
-    };
-});
-builder.Services.AddDistributedMemoryCache();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddSingleton<IStorageService, RedisStorageService>();
 builder.Services.AddSingleton<IPostiveSentimentDataProvider, CoinMarketCapService>();
+builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddHangfire(configuration => configuration
             .UseSimpleAssemblyNameTypeSerializer()
@@ -41,6 +32,9 @@ builder.Services.AddHangfire(configuration => configuration
             .UseMemoryStorage());
 
 builder.Services.AddHangfireServer();
+
+builder.Services.AddHostedService<WorkerStarter>();
+
 
 var app = builder.Build();
 
