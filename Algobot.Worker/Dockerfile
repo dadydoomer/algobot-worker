@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 COPY . .
-RUN dotnet restore Algobot/Server/Algobot.Worker.csproj
-RUN dotnet publish Algobot/Server/Algobot.Worker.csproj -c Release -o /app --no-restore
+RUN dotnet restore Algobot.Worker.csproj
+RUN dotnet publish Algobot.Worker.csproj -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
