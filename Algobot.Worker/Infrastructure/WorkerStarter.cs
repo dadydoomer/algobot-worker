@@ -19,6 +19,7 @@ namespace Algobot.Worker.Infrastructure
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            RecurringJob.AddOrUpdate("15m job", () => _postiveSentimentData.GetSymbols(Interval.FifteenMinutes, new string[] { "BTCUSDT" }), FifteenMinutesExpression);
             RecurringJob.AddOrUpdate("4h job", () => _postiveSentimentData.GetSymbols(Interval.FourHour, 2m), FourHoursExpression);
             RecurringJob.AddOrUpdate("1d job", () => _postiveSentimentData.GetSymbols(Interval.OneDay, 5m), OneDayExpression);
         }
